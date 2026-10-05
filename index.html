@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>👑 TOÁN HỌC 3-12</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow-x: hidden; }
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #000005;
+  min-height: 100vh;
+  color: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== NỀN THIÊN HÀ ===== */
+.galaxy {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(88,28,135,0.55), transparent 60%),
+    radial-gradient(ellipse 70% 50% at 80% 80%, rgba(190,24,93,0.45), transparent 60%),
+    radial-gradient(ellipse 90% 70% at 50% 50%, rgba(30,64,175,0.4), transparent 70%),
+    radial-gradient(circle at 50% 100%, rgba(126,34,206,0.4), transparent 55%),
+    #000005;
+}
+.galaxy::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(2px 2px at 15% 25%, #fff, transparent),
+    radial-gradient(1px 1px at 45% 60%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 75% 15%, #fff, transparent),
+    radial-gradient(1px 1px at 30% 80%, #fff, transparent),
+    radial-gradient(2px 2px at 60% 40%, #fff, transparent),
+    radial-gradient(1px 1px at 85% 70%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 10% 55%, #fff, transparent),
+    radial-gradient(1px 1px at 50% 10%, #fff, transparent),
+    radial-gradient(1px 1px at 90% 35%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 25% 45%, #fff, transparent),
+    radial-gradient(1px 1px at 70% 90%, #fff, transparent),
+    radial-gradient(2px 2px at 40% 20%, #fff, transparent);
+  background-size: 200% 200%;
+  animation: twinkle 6s ease-in-out infinite alternate;
+  opacity: 0.7;
+}
+@keyframes twinkle {
+  0% { opacity: 0.4; transform: scale(1); }
+  100% { opacity: 0.9; transform: scale(1.05); }
+}
+.galaxy::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(168,85,247,0.08) 60deg, transparent 120deg, rgba(236,72,153,0.08) 200deg, transparent 280deg, rgba(59,130,246,0.08) 340deg, transparent 360deg);
+  animation: swirl 40s linear infinite;
+}
+@keyframes swirl { to { transform: rotate(360deg); } }
+
+/* Sao bay */
+.star {
+  position: fixed;
+  width: 2px;
+  height: 2px;
+  background: #fff;
+  border-radius: 50%;
+  z-index: 1;
+  pointer-events: none;
+  animation: shoot 4s linear infinite;
+  opacity: 0;
+}
+@keyframes shoot {
+  0% { transform: translate(0,0); opacity: 0; }
+  10% { opacity: 1; }
+  100% { transform: translate(200px, 200px); opacity: 0; }
+}
+
+/* ===== CONTAINER ===== */
+.container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 500px;
+  background: rgba(10, 0, 20, 0.75);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 22px;
+  border: 2px solid;
+  border-image: linear-gradient(135deg, #ff0000, #ff7700, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff) 1;
+  box-shadow: 0 0 60px rgba(168, 85, 247, 0.6), 0 0 120px rgba(236,72,153,0.3), inset 0 0 40px rgba(88,28,135,0.2);
+}
+
+h1 {
+  font-size: 20px;
+  text-align: center;
+  background: linear-gradient(90deg, #ff0000, #ffff00, #00ff00, #00ffff, #ff00ff);
+  background-size: 300% 100%;
+  animation: gradShift 5s ease infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+@keyframes gradShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.sub {
+  text-align: center;
+  font-size: 10.5px;
+  color: #c4b5fd;
+  letter-spacing: 1.5px;
+  margin-bottom: 18px;
+  font-weight: 700;
+}
+
+.level-picker {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-bottom: 14px;
+}
+.lv {
+  padding: 8px 4px;
+  border-radius: 8px;
+  background: rgba(20, 10, 30, 0.8);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  color: #c4b5fd;
+  font-size: 11px;
+  font-weight: 900;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+}
+.lv:hover { background: rgba(168, 85, 247, 0.2); }
+.lv.sel {
+  background: linear-gradient(135deg, #ec4899, #a855f7);
+  color: #fff;
+  border-color: #f9a8d4;
+  box-shadow: 0 0 12px rgba(236,72,153,0.6);
+}
+
+.info-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.info-box {
+  background: rgba(10, 0, 20, 0.8);
+  border: 1px solid rgba(168, 85, 247, 0.4);
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  box-shadow: inset 0 0 12px rgba(88,28,135,0.3);
+}
+.info-box .num {
+  font-size: 20px;
+  font-weight: 900;
+  color: #4ade80;
+  line-height: 1;
+  text-shadow: 0 0 10px currentColor;
+}
+.info-box .num.yellow { color: #facc15; }
+.info-box .num.pink { color: #f472b6; }
+.info-box .lbl {
+  font-size: 9px;
+  color: #8b5cf6;
+  margin-top: 4px;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.question-box {
+  background: rgba(10, 0, 20, 0.9);
+  border: 2px solid;
+  border-image: linear-gradient(135deg, #ec4899, #a855f7, #3b82f6) 1;
+  border-radius: 14px;
+  padding: 26px 16px;
+  margin-bottom: 14px;
+  text-align: center;
+  min-height: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 30px rgba(168,85,247,0.15), 0 0 20px rgba(236,72,153,0.2);
+}
+.question-box::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, transparent, rgba(168,85,247,0.05), transparent, rgba(236,72,153,0.05), transparent);
+  animation: swirl 15s linear infinite;
+  pointer-events: none;
+}
+.question-text {
+  position: relative;
+  z-index: 2;
+  font-size: 24px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.3;
+  letter-spacing: 1px;
+  word-break: break-word;
+  text-shadow: 0 0 20px rgba(168,85,247,0.8), 0 0 40px rgba(236,72,153,0.4);
+}
+.timer-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #22c55e, #facc15, #ef4444);
+  width: 100%;
+  transition: width 0.05s linear;
+  box-shadow: 0 0 12px currentColor;
+  z-index: 3;
+}
+.timer-text {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 13px;
+  font-weight: 900;
+  color: #facc15;
+  font-family: monospace;
+  z-index: 3;
+  text-shadow: 0 0 10px rgba(250,204,21,0.8);
+}
+.level-badge {
+  display: inline-block;
+  font-size: 10px;
+  padding: 3px 10px;
+  background: linear-gradient(135deg, #ec4899, #a855f7);
+  color: #fff;
+  border-radius: 6px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 0 12px rgba(236,72,153,0.6);
+}
+
+.answer-area {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.answer-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: rgba(10, 0, 20, 0.9);
+  border: 2px solid rgba(168, 85, 247, 0.5);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 900;
+  text-align: center;
+  outline: none;
+  transition: all 0.15s;
+}
+.answer-input:focus {
+  border-color: #ec4899;
+  box-shadow: 0 0 16px rgba(236,72,153,0.6);
+}
+.answer-btn {
+  padding: 14px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  transition: transform 0.15s;
+  box-shadow: 0 0 20px rgba(34,197,94,0.4);
+}
+.answer-btn:hover:not(:disabled) { transform: scale(1.02); }
+.answer-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-main {
+  width: 100%;
+  padding: 14px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ff0000, #ff7700, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff);
+  background-size: 300% 300%;
+  animation: gradShift 4s ease infinite;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+  text-shadow: 0 0 8px rgba(0,0,0,0.8);
+  box-shadow: 0 0 30px rgba(168,85,247,0.6);
+  transition: transform 0.15s;
+}
+.btn-main:hover { transform: scale(1.02); }
+
+.result {
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 900;
+  text-align: center;
+  display: none;
+  letter-spacing: 1px;
+}
+.result.show { display: block; animation: popIn 0.3s ease; }
+@keyframes popIn {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.result.correct { background: rgba(34,197,94,0.15); border: 2px solid #22c55e; color: #4ade80; box-shadow: 0 0 20px rgba(34,197,94,0.3); }
+.result.wrong { background: rgba(239,68,68,0.15); border: 2px solid #ef4444; color: #f87171; box-shadow: 0 0 20px rgba(239,68,68,0.3); }
+.result.timeout { background: rgba(234,179,8,0.15); border: 2px solid #eab308; color: #facc15; box-shadow: 0 0 20px rgba(234,179,8,0.3); }
+
+.streak {
+  font-size: 11px;
+  color: #facc15;
+  text-align: center;
+  margin-top: 6px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(250,204,21,0.6);
+}
+</style>
+</head>
+<body>
+<div class="galaxy"></div>
+<div class="star" style="top:10%;left:10%;animation-delay:0s"></div>
+<div class="star" style="top:30%;left:80%;animation-delay:1.5s"></div>
+<div class="star" style="top:60%;left:20%;animation-delay:2.5s"></div>
+<div class="star" style="top:80%;left:70%;animation-delay:0.8s"></div>
+<div class="star" style="top:50%;left:50%;animation-delay:3.2s"></div>
+
+<div class="container">
+  <h1>👑 TOÁN HỌC 3-12 👑</h1>
+  <div class="sub">BOT RA CÂU HỎI · 7 GIÂY TRẢ LỜI</div>
+
+  <div class="level-picker">
+    <button class="lv sel" data-lv="3">LỚP 3</button>
+    <button class="lv" data-lv="4">LỚP 4</button>
+    <button class="lv" data-lv="5">LỚP 5</button>
+    <button class="lv" data-lv="6">LỚP 6</button>
+    <button class="lv" data-lv="7">LỚP 7</button>
+    <button class="lv" data-lv="8">LỚP 8</button>
+    <button class="lv" data-lv="9">LỚP 9</button>
+    <button class="lv" data-lv="10">LỚP 10</button>
+    <button class="lv" data-lv="11">LỚP 11</button>
+    <button class="lv" data-lv="12">LỚP 12</button>
+  </div>
+
+  <div class="info-bar">
+    <div class="info-box"><div class="num" id="scoreNum">0</div><div class="lbl">ĐIỂM</div></div>
+    <div class="info-box"><div class="num yellow" id="streakNum">0</div><div class="lbl">CHUỖI</div></div>
+    <div class="info-box"><div class="num pink" id="bestNum">0</div><div class="lbl">KỶ LỤC</div></div>
+  </div>
+
+  <div class="question-box" id="qBox">
+    <div class="level-badge" id="levelBadge">LỚP 3</div>
+    <div class="question-text" id="qText">Bấm BẮT ĐẦU để chơi</div>
+    <div class="timer-text" id="timerText" style="display:none">7.0s</div>
+    <div class="timer-bar" id="timerBar" style="display:none"></div>
+  </div>
+
+  <div class="answer-area">
+    <input type="text" class="answer-input" id="ansInput" placeholder="Trả lời..." disabled>
+    <button class="answer-btn" id="submitBtn" disabled>TRẢ LỜI</button>
+  </div>
+
+  <button class="btn-main" id="startBtn">🚀 BẮT ĐẦU</button>
+
+  <div class="result" id="result"></div>
+  <div class="streak" id="streakInfo"></div>
+</div>
+
+<script>
+(function () {
+  const qText = document.getElementById('qText');
+  const levelBadge = document.getElementById('levelBadge');
+  const timerText = document.getElementById('timerText');
+  const timerBar = document.getElementById('timerBar');
+  const ansInput = document.getElementById('ansInput');
+  const submitBtn = document.getElementById('submitBtn');
+  const startBtn = document.getElementById('startBtn');
+  const resultEl = document.getElementById('result');
+  const scoreNum = document.getElementById('scoreNum');
+  const streakNum = document.getElementById('streakNum');
+  const bestNum = document.getElementById('bestNum');
+  const streakInfo = document.getElementById('streakInfo');
+
+  let currentLevel = 3;
+  let currentAnswer = null;
+  let score = 0;
+  let streak = 0;
+  let best = 0;
+  let timer = null;
+  let running = false;
+  const TIME_LIMIT = 7.0;
+
+  function randInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  // ===== CÂU HỎI DỄ HƠN =====
+
+  function genQ3() {
+    // Lớp 3: cộng trừ 1-100, nhân chia bảng cửu chương
+    const t = randInt(0, 3);
+    if (t === 0) { const a = randInt(1, 50), b = randInt(1, 50); return { q: a + ' + ' + b + ' = ?', a: a + b }; }
+    if (t === 1) { const a = randInt(20, 99), b = randInt(1, 20); return { q: a + ' - ' + b + ' = ?', a: a - b }; }
+    if (t === 2) { const a = randInt(2, 9), b = randInt(2, 9); return { q: a + ' × ' + b + ' = ?', a: a * b }; }
+    const b = randInt(2, 9), ans = randInt(2, 9);
+    return { q: (ans * b) + ' ÷ ' + b + ' = ?', a: ans };
+  }
+
+  function genQ4() {
+    // Lớp 4: số lớn hơn chút, nhân 2 chữ số với 1 chữ số
+    const t = randInt(0, 3);
+    if (t === 0) { const a = randInt(100, 999), b = randInt(100, 999); return { q: a + ' + ' + b + ' = ?', a: a + b }; }
+    if (t === 1) { const a = randInt(200, 999), b = randInt(50, 200); return { q: a + ' - ' + b + ' = ?', a: a - b }; }
+    if (t === 2) { const a = randInt(10, 50), b = randInt(2, 9); return { q: a + ' × ' + b + ' = ?', a: a * b }; }
+    const b = randInt(2, 9), ans = randInt(10, 50);
+    return { q: (ans * b) + ' ÷ ' + b + ' = ?', a: ans };
+  }
+
+  function genQ5() {
+    // Lớp 5: số thập phân đơn giản, % cơ bản
+    const t = randInt(0, 3);
+    if (t === 0) { const a = randInt(100, 999), b = randInt(100, 999); return { q: a + ' + ' + b + ' = ?', a: a + b }; }
+    if (t === 1) { const a = randInt(5, 50), b = randInt(5, 50); return { q: a + ' × ' + b + ' = ?', a: a * b }; }
+    if (t === 2) { const p = [10, 20, 25, 50][randInt(0, 3)], num = randInt(1, 20) * 10; return { q: p + '% của ' + num + ' = ?', a: p * num / 100 }; }
+    const b = randInt(10, 50), ans = randInt(10, 50);
+    return { q: (ans * b) + ' ÷ ' + b + ' = ?', a: ans };
+  }
+
+  function genQ6() {
+    // Lớp 6: số nguyên, lũy thừa nhỏ
+    const t = randInt(0, 3);
+    if (t === 0) { const a = randInt(-20, 20), b = randInt(-20, 20); return { q: a + ' + (' + b + ') = ?', a: a + b }; }
+    if (t === 1) { const a = randInt(2, 5); return { q: a + '² = ?', a: a * a }; }
+    if (t === 2) { const a = randInt(2, 4); return { q: a + '³ = ?', a: a * a * a }; }
+    const a = randInt(2, 6), b = randInt(2, 6);
+    return { q: 'ƯCLN(' + a * 2 + ', ' + a * 3 + ') = ?', a: a };
+  }
+
+  function genQ7() {
+    // Lớp 7: số hữu tỉ đơn giản, giá trị tuyệt đối
+    const t = randInt(0, 3);
+    if (t === 0) { const a = randInt(2, 9); return { q: '|−' + a + '| + |' + a + '| = ?', a: a * 2 }; }
+    if (t === 1) { const a = randInt(2, 5); return { q: '√' + (a * a) + ' = ?', a: a }; }
+    if (t === 2) { const a = randInt(2, 5); return { q: '(x + ' + a + ') khi x = ' + a + ' = ?', a: a * 2 }; }
+    const a = randInt(2, 9), b = randInt(2, 9);
+    return { q: a + ' × ' + b + ' + ' + a + ' = ?', a: a * b + a };
+  }
+
+  function genQ8() {
+    // Lớp 8: hằng đẳng thức đơn giản
+    const t = randInt(0, 3);
+    if (t === 0) { const a = randInt(2, 6); return { q: a + '³ = ?', a: a * a * a }; }
+    if (t === 1) { const a = randInt(2, 5); return { q: 'Diện tích hình vuông cạnh ' + a + ' = ?', a: a * a }; }
+    if (t === 2) { const a = randInt(2, 5); return { q: '(x + ' + a + ')² khi x = 0 = ?', a: a * a }; }
+    const a = randInt(2, 9), b = randInt(2, 9);
+    return { q: a + '² + ' + b + '² = ?', a: a * a + b * b };
+  }
+
+  function genQ9() {
+    // Lớp 9: căn bậc 2 cơ bản, tam giác vuông
+    const t = randInt(0, 3);
+    if (t === 0) { const a = randInt(2, 9); return { q: '√' + (a * a * 4) + ' = ?', a: a * 2 }; }
+    if (t === 1) { const a = randInt(3, 5), b = randInt(3, 5); return { q: 'Tam giác vuông: ' + a + ', ' + b + '. Cạnh huyền² = ?', a: a * a + b * b }; }
+    if (t === 2) { const a = randInt(2, 5); return { q: 'Diện tích tam giác đáy ' + a + ', cao ' + a + ' = ?', a: a * a / 2 }; }
+    const a = randInt(2, 6);
+    return { q: 'Phương trình x² = ' + a * a + '. x = ? (nghiệm dương)', a: a };
+  }
+
+  function genQ10() {
+    // Lớp 10: lượng giác cơ bản, logarit
+    const t = randInt(0, 3);
+    if (t === 0) { const a = randInt(30, 60); return { q: 'sin(' + a + '°)² + cos(' + a + '°)² = ?', a: 1 }; }
+    if (t === 1) { const x = randInt(1, 4); return { q: 'log₂(' + Math.pow(2, x) + ') = ?', a: x }; }
+    if (t === 2) { const a = randInt(2, 5); return { q: 'x² − ' + (a * 2) + 'x + ' + (a * a) + ' = 0. Nghiệm kép = ?', a: a }; }
+    const a = randInt(1, 5);
+    return { q: 'Tập xác định √(x − ' + a + '): nhỏ nhất x = ?', a: a };
+  }
+
+  function genQ11() {
+    // Lớp 11: cấp số, tổ hợp cơ bản
+    const t = randInt(0, 3);
+    if (t === 0) { const a = randInt(1, 5), n = randInt(2, 4); return { q: 'Cấp số cộng: u1 = ' + a + ', d = ' + a + '. u' + (n + 1) + ' = ?', a: a + n * a }; }
+    if (t === 1) { const a = randInt(2, 3); return { q: 'Cấp số nhân: u1 = 1, q = ' + a + '. u3 = ?', a: a * a }; }
+    if (t === 2) { const n = randInt(2, 4); return { q: 'Số hoán vị ' + n + ' phần tử = ?', a: [2, 6, 24, 120][n - 2] }; }
+    const n = randInt(2, 5);
+    return { q: 'C(' + n + ',1) = ?', a: n };
+  }
+
+  function genQ12() {
+    // Lớp 12: đạo hàm, logarit cơ bản
+    const t = randInt(0, 3);
+    if (t === 0) { const a = randInt(1, 5); return { q: 'f(x) = x^' + a + '. f\'(1) = ?', a: a }; }
+    if (t === 1) { const x = randInt(1, 5); return { q: 'ln(e^' + x + ') = ?', a: x }; }
+    if (t === 2) { const a = randInt(1, 4); return { q: 'f(x) = ' + a + 'x. f\'(x) = ? (nhập hệ số)', a: a }; }
+    const a = randInt(1, 5);
+    return { q: 'f(x) = x² + ' + a + 'x. f\'(1) = ?', a: 2 + a };
+  }
+
+  function genQ(level) {
+    if (level === 3) return genQ3();
+    if (level === 4) return genQ4();
+    if (level === 5) return genQ5();
+    if (level === 6) return genQ6();
+    if (level === 7) return genQ7();
+    if (level === 8) return genQ8();
+    if (level === 9) return genQ9();
+    if (level === 10) return genQ10();
+    if (level === 11) return genQ11();
+    if (level === 12) return genQ12();
+    return genQ3();
+  }
+
+  document.querySelectorAll('.lv').forEach(function (b) {
+    b.onclick = function () {
+      if (running) return;
+      document.querySelectorAll('.lv').forEach(function (x) { x.classList.remove('sel'); });
+      b.classList.add('sel');
+      currentLevel = parseInt(b.dataset.lv);
+      levelBadge.textContent = 'LỚP ' + currentLevel;
+    };
+  });
+
+  function showResult(text, cls) {
+    resultEl.textContent = text;
+    resultEl.className = 'result show ' + cls;
+  }
+  function hideResult() {
+    resultEl.className = 'result';
+  }
+
+  function nextQuestion() {
+    if (!running) return;
+    hideResult();
+
+    const q = genQ(currentLevel);
+    currentAnswer = q.a;
+    qText.textContent = q.q;
+
+    ansInput.value = '';
+    ansInput.disabled = false;
+    submitBtn.disabled = false;
+    ansInput.focus();
+
+    timerText.style.display = 'block';
+    timerBar.style.display = 'block';
+    timerBar.style.width = '100%';
+    timerText.textContent = '7.0s';
+
+    const startTime = Date.now();
+    timer = setInterval(function () {
+      const elapsed = (Date.now() - startTime) / 1000;
+      const remain = Math.max(0, TIME_LIMIT - elapsed);
+      timerText.textContent = remain.toFixed(1) + 's';
+      timerBar.style.width = (remain / TIME_LIMIT * 100) + '%';
+
+      if (remain <= 0) {
+        clearInterval(timer);
+        timer = null;
+        submitAnswer(null);
+      }
+    }, 50);
+  }
+
+  function submitAnswer(userAnswer) {
+    if (timer) { clearInterval(timer); timer = null; }
+    ansInput.disabled = true;
+    submitBtn.disabled = true;
+    timerBar.style.display = 'none';
+    timerText.style.display = 'none';
+
+    if (userAnswer === null) {
+      showResult('⏰ HẾT GIỜ! Đáp án: ' + currentAnswer, 'timeout');
+      streak = 0;
+      streakNum.textContent = 
